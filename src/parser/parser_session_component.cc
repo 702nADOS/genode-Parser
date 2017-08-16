@@ -48,6 +48,7 @@ Genode::Ram_dataspace_capability Parser_session_component::live_data()
 						xml.attribute("state", std::to_string(threads[i].state).c_str());
 						xml.attribute("arrival-time", std::to_string(threads[i].arrival_time/1000).c_str());
 						xml.attribute("start-time", std::to_string(threads[i].start_time/1000).c_str());
+						xml.attribute("exit-time", std::to_string(threads[i].exit_time/1000).c_str());
 						xml.attribute("session", threads[i].session_label.string());
 						xml.attribute("thread", threads[i].thread_name.string());
 			      	 		xml.attribute("ram_quota", std::to_string(threads[i].ram_quota/1024).c_str());
