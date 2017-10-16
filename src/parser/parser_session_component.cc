@@ -27,14 +27,14 @@ Genode::Ram_dataspace_capability Parser_session_component::live_data()
 	Mon_manager::Monitoring_object *threads=Genode::env()->rm_session()->attach(mon_ds_cap);
 	dead_ds_cap = Genode::env()->ram_session()->alloc(256*sizeof(long long unsigned));
 	long long unsigned *rip=Genode::env()->rm_session()->attach(dead_ds_cap);
-	_mon_manager.update_info(mon_ds_cap);
+	size_t num_subjects=_mon_manager.update_info(mon_ds_cap);
 	
 	Genode::Xml_generator xml(_live_data.local_addr<char>(), _live_data.size(), "live", [&]()
 	{
 		xml.node("task-descriptions", [&]()
 		{
 			for (int j = 0; j < 1; j++) {
-					for (size_t i = 0; i < 100; i++) {
+					for (size_t i = 0; i < num_subjects; i++) {
 						xml.node("task", [&]()
 						{
 			       			xml.attribute("id", std::to_string(threads[i].id).c_str());
