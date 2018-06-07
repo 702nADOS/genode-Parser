@@ -10,9 +10,19 @@
 //#include <os/config.h>
 #include <base/attached_rom_dataspace.h>
 
+/*
 Parser_session_component::Parser_session_component(Genode::Env &env, Server::Entrypoint& ep) :
 	_env(env),
 	_ep{ep},
+	//_cap{},
+	_profile_data{_env.ram(), _env.rm(), _profile_ds_size()},
+	_live_data{_env.ram(), _env.rm(), _profile_ds_size()}
+{
+}
+*/
+Parser_session_component::Parser_session_component(Genode::Env &env) :
+	_env(env),
+	_ep(env.ep()),
 	//_cap{},
 	_profile_data{_env.ram(), _env.rm(), _profile_ds_size()},
 	_live_data{_env.ram(), _env.rm(), _profile_ds_size()}
@@ -29,14 +39,14 @@ Genode::Ram_dataspace_capability Parser_session_component::live_data()
 	Mon_manager::Monitoring_object *threads = _env.rm().attach(mon_ds_cap);
 	dead_ds_cap = _env.ram().alloc(256*sizeof(long long unsigned));
 	//long long unsigned *rip = _env.rm().attach(dead_ds_cap);
-	size_t num_subjects=_mon_manager.update_info(mon_ds_cap);
+	Genode::size_t num_subjects=_mon_manager.update_info(mon_ds_cap);
 	
 	Genode::Xml_generator xml(_live_data.local_addr<char>(), _live_data.size(), "live", [&]()
 	{
 		xml.node("task-descriptions", [&]()
 		{
 			for (int j = 0; j < 1; j++) {
-					for (size_t i = 0; i < num_subjects; i++) {
+					for (Genode::size_t i = 0; i < num_subjects; i++) {
 						xml.node("task", [&]()
 						{
 			       			xml.attribute("id", std::to_string(threads[i].id).c_str());
@@ -69,7 +79,7 @@ Genode::Ram_dataspace_capability Parser_session_component::profile_data()
 	static Genode::Trace::Connection trace(_env, 1024*4096, 64*4096, 0);
 
 	Genode::Trace::Subject_id subjects[32];
-	size_t num_subjects = trace.subjects(subjects, 32);
+	Genode::size_t num_subjects = trace.subjects(subjects, 32);
 
 
 	//Task::log_profile_data(Task::Event::EXTERNAL, -1, _shared);
@@ -80,7 +90,7 @@ Genode::Ram_dataspace_capability Parser_session_component::profile_data()
 	{
 		xml.node("task-descriptions", [&]()
 		{
-			for (size_t i = 0; i < num_subjects; i++)
+			for (Genode::size_t i = 0; i < num_subjects; i++)
 			{
 				Genode::Trace::CPU_info info = trace.cpu_info(subjects[i]);
 				Genode::Trace::RAM_info ram_info = trace.ram_info(subjects[i]);

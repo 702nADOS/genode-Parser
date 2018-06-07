@@ -4,7 +4,7 @@
 #include <parser/parser_session.h>
 //#include <os/attached_ram_dataspace.h>
 #include <base/attached_ram_dataspace.h>
-#include <os/server.h>
+//#include <os/server.h>
 #include <root/component.h>
 #include <timer_session/connection.h>
 #include <util/string.h>
@@ -15,7 +15,8 @@
 struct Parser_session_component : Genode::Rpc_object<Parser_session>
 {
 public:
-	Parser_session_component(Genode::Env &_env, Server::Entrypoint& ep);
+	//Parser_session_component(Genode::Env &_env, Server::Entrypoint& ep);
+	Parser_session_component(Genode::Env &env);
 	virtual ~Parser_session_component();
 	// Get profiling data as an XML file.
 	Genode::Ram_dataspace_capability profile_data();
@@ -25,7 +26,7 @@ public:
 
 protected:
 	Genode::Env &_env;
-	Server::Entrypoint& _ep;
+	Genode::Entrypoint& _ep;
 	//Genode::Cap_connection _cap;
 	Genode::Number_of_bytes _profile_ds_size();
 
@@ -40,19 +41,19 @@ protected:
 struct Parser_root_component : Genode::Root_component<Parser_session_component>
 {
 public:
-	Parser_root_component(Genode::Env &env, Server::Entrypoint* ep, Genode::Allocator *allocator) :
+	Parser_root_component(Genode::Env &env, Genode::Entrypoint* ep, Genode::Allocator *allocator) :
 		Genode::Root_component<Parser_session_component>(&ep->rpc_ep(), allocator),
-		 _env(env), _ep(*ep)
+		 _env(env)
 	{
 		Genode::log("Creating root component.");
 	}
 
 protected:
 	Genode::Env &_env;
-	Server::Entrypoint& _ep;
+	//Genode::Entrypoint& _ep;
 	Parser_session_component* _create_session(const char *)
 	{
 		Genode::log("Creating Parser session.");
-		return new (md_alloc()) Parser_session_component(_env, _ep);
+		return new (md_alloc()) Parser_session_component(_env);
 	}
 };

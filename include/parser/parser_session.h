@@ -3,7 +3,7 @@
 #include <session/session.h>
 #include <base/rpc.h>
 #include <ram_session/ram_session.h>
-#include <string>
+//#include <string>
 
 struct Parser_session : Genode::Session
 {
