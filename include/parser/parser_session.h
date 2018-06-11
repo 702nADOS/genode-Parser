@@ -3,12 +3,12 @@
 #include <session/session.h>
 #include <base/rpc.h>
 #include <ram_session/ram_session.h>
-#include <string>
+//#include <string>
 
 struct Parser_session : Genode::Session
 {
 	static const char *service_name() { return "parser"; }
-
+	enum { CAP_QUOTA = 2 };
 	virtual Genode::Ram_dataspace_capability profile_data() = 0;
 
 	virtual Genode::Ram_dataspace_capability live_data() = 0;
