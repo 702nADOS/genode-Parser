@@ -11,31 +11,30 @@
 namespace Parser{ struct Main;}
 struct Parser::Main
 {
-	Parser_root_component parser_root ;
-	Libc::Env &_env;
-	//Genode::Sliced_heap _sliced_heap { _env.ram(), _env.rm() };
+	enum { ROOT_STACK_SIZE = 16*1024 };
+	
+	Genode::Env &_env;
 
 	Genode::Heap _heap { _env.ram(), _env.rm() };
 
-	Main(Libc::Env &env) :
-		parser_root(_env, &_env.ep(), &_heap), _env(env)
+	Parser_root_component parser_root { _env, &_env.ep(), &_heap };
+
+	Main(Genode::Env &env) :
+		_env(env)
 	{
-		Genode::log("parser: Hello!\n");
-		_env.parent().announce(_env.ep().rpc_ep().manage(&parser_root));
+		Genode::log("parser: Hello!");
+		_env.parent().announce(_env.ep().manage(parser_root));
 	}
 };
 
-/************
- ** Server **
- ************/
+Genode::size_t Component::stack_size() { return 32*2048; }
 
-
-
-	//char const *name()             { return "parser";      }
-	//Genode::size_t Component::stack_size()            { return 64*1024*sizeof(long); }
-//void Component::construct(Genode::Env &env) { static Parser::Main server(env);     }
-
-void Libc::Component::construct(Libc::Env &env)
+void Component::construct(Genode::Env &env)
 {
-	Libc::with_libc([&] () { static Parser::Main main(env); });
+	static Parser::Main server(env);
+}
+
+void Libc::Component::construct(Libc::Env&)
+{
+	//Libc::with_libc([&] () {  });
 }
