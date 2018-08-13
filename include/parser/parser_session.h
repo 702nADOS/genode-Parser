@@ -4,8 +4,8 @@
 #include <base/rpc.h>
 #include <ram_session/ram_session.h>
 //#include <string>
-
-struct Parser_session : Genode::Session
+namespace Parser {
+struct Session : Genode::Session
 {
 	static const char *service_name() { return "parser"; }
 	enum { CAP_QUOTA = 2 };
@@ -19,3 +19,4 @@ struct Parser_session : Genode::Session
 
 	GENODE_RPC_INTERFACE(Rpc_profile_data, Rpc_live_data);
 };
+}

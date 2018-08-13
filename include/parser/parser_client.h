@@ -3,11 +3,12 @@
 #include <base/printf.h>
 #include <base/rpc_client.h>
 #include <parser/parser_session.h>
-
-struct Parser_session_client : Genode::Rpc_client<Parser_session>
+namespace Parser {
+struct Session_client : Genode::Rpc_client<Session>
 {
-	Parser_session_client(Genode::Capability<Parser_session> cap):
-		Genode::Rpc_client<Parser_session>(cap) {}
+	Session_client(Genode::Capability<Session> cap):
+		Genode::Rpc_client<Session>(cap) {}
+
 
 	Genode::Ram_dataspace_capability profile_data()
 	{
@@ -20,3 +21,4 @@ struct Parser_session_client : Genode::Rpc_client<Parser_session>
 	}
 
 };
+}

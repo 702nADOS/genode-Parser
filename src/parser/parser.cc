@@ -1,4 +1,4 @@
-#include "parser_session_component.h"
+#include <parser/parser.h>
 #include <timer_session/connection.h>
 #include <base/env.h>
 #include <base/printf.h>
@@ -9,7 +9,7 @@
 #include <trace_session/connection.h>
 //#include <os/config.h>
 #include <base/attached_rom_dataspace.h>
-
+namespace Parser{
 /*
 Parser_session_component::Parser_session_component(Genode::Env &env, Server::Entrypoint& ep) :
 	_env(env),
@@ -20,7 +20,7 @@ Parser_session_component::Parser_session_component(Genode::Env &env, Server::Ent
 {
 }
 */
-Parser_session_component::Parser_session_component(Genode::Env &env) :
+Parser::Parser(Genode::Env &env) :
 	_env(env),
 	_ep(env.ep()),
 	//_cap{},
@@ -29,11 +29,7 @@ Parser_session_component::Parser_session_component(Genode::Env &env) :
 {
 }
 
-Parser_session_component::~Parser_session_component()
-{
-}
-
-Genode::Ram_dataspace_capability Parser_session_component::live_data()
+Genode::Ram_dataspace_capability Parser::live_data()
 {
 	mon_ds_cap = _env.ram().alloc(100*sizeof(Mon_manager::Monitoring_object));
 	Mon_manager::Monitoring_object *threads = _env.rm().attach(mon_ds_cap);
@@ -74,7 +70,7 @@ Genode::Ram_dataspace_capability Parser_session_component::live_data()
 	return _live_data.cap();
 }
 
-Genode::Ram_dataspace_capability Parser_session_component::profile_data()
+Genode::Ram_dataspace_capability Parser::profile_data()
 {
 	static Genode::Trace::Connection trace(_env, 1024*4096, 64*4096, 0);
 
@@ -146,10 +142,11 @@ Genode::Number_of_bytes Parser_session_component::_profile_ds_size()
 	return launchpad_node.attribute_value<Genode::Number_of_bytes>("ds-size", 128 * 1024);
 }
 */
-Genode::Number_of_bytes Parser_session_component::_profile_ds_size()
+Genode::Number_of_bytes Parser::_profile_ds_size()
 {
 	Genode::Attached_rom_dataspace config(_env, "config");
 	Genode::Xml_node launchpad_node = config.xml().sub_node("profile");
 	return launchpad_node.attribute_value<Genode::Number_of_bytes>("ds-size", 128 * 1024);
+}
 }
 

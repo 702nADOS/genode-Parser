@@ -2,13 +2,13 @@
 
 #include <parser/parser_client.h>
 #include <base/connection.h>
-
-struct Parser_connection : Genode::Connection<Parser_session>, Parser_session_client
+namespace Parser {
+struct Connection : Genode::Connection<Session>, Session_client
 {
-	Parser_connection() :
-		Genode::Connection<Parser_session>(session("bar, ram_quota=1M")),
+	Connection(Genode::Env &env) : Genode::Connection<Parser::Session>(env, session(env.parent(),
+		                                                "ram_quota=6K, cap_quota=4")),
+		               Session_client(cap()) { }
+	};
 
-		Parser_session_client(cap())
-	{
-	}
-};
+
+}
